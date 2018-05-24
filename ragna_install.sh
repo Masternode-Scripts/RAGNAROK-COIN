@@ -3,7 +3,7 @@
 TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE='ragnarok.conf'
 CONFIGFOLDER='/root/.ragnarok'
-COIN_DAEMON='/root/ragnarokd'
+COIN_DAEMON='/usr/local/bin/ragnarokd'
 COIN_REPO='https://www.dropbox.com/s/vkt8x0cg8b9lvor/ragnarok.tar.gz'
 COIN_NAME='RAGNAROK'
 COIN_PORT=1232
@@ -68,7 +68,7 @@ EOF
 
   if [[ -z "$(ps axo cmd:100 | egrep $COIN_DAEMON)" ]]; then
     echo -e "${RED}$COIN_NAME is not running${NC}, please investigate. You should start by running the following commands as root:"
-    echo -e "${GREEN}systemctl start $COIN_NAME.service"
+    echo -e "${RED}systemctl start $COIN_NAME.service"
     echo -e "systemctl status $COIN_NAME.service"
     echo -e "less /var/log/syslog${NC}"
     exit 1
@@ -164,7 +164,7 @@ EOF
 
 
 function enable_firewall() {
-  echo -e "Installing and setting up firewall to allow ingress on port ${GREEN}$COIN_PORT${NC}"
+  echo -e "Installing and setting up firewall to accept connections on port ${RED}$COIN_PORT${NC}"
   ufw allow $COIN_PORT/tcp comment "$COIN_NAME MN port" >/dev/null
   ufw allow ssh comment "SSH" >/dev/null 2>&1
   ufw limit ssh/tcp >/dev/null 2>&1
@@ -183,7 +183,7 @@ function get_ip() {
 
   if [ ${#NODE_IPS[@]} -gt 1 ]
     then
-      echo -e "${GREEN}More than one IP. Please type 0 to use the first IP, 1 for the second and so on...${NC}"
+      echo -e "${RED}More than one IP. Please type 0 to use the first IP, 1 for the second and so on...${NC}"
       INDEX=0
       for ip in "${NODE_IPS[@]}"
       do
@@ -237,7 +237,7 @@ apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
 apt install -y software-properties-common >/dev/null 2>&1
-echo -e "${GREEN}Adding bitcoin PPA repository"
+echo -e "${RED}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
